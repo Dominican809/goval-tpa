@@ -53,6 +53,19 @@ const dict = {
     "ops.p":
       "Un solo conector. Todo el ecosistema — asistencia, red médica, reclamos, pólizas y reportes, bajo tu marca desde el primer día.",
 
+    "diagram.connects": "Conecta con",
+    "diagram.insurer": "Aseguradora",
+    "diagram.insurerSub": "Producto de seguro de viaje",
+    "diagram.hubSub": "Conector operativo y tecnológico",
+    "diagram.n1": "Asistencia 24/7",
+    "diagram.n2": "Red global de prestadores",
+    "diagram.n3": "Gestión de siniestros",
+    "diagram.n4": "Administración de pólizas",
+    "diagram.n5": "Motor de reglas",
+    "diagram.n6": "APIs e integraciones",
+    "diagram.n7": "Analítica y reportes",
+    "diagram.n8": "Autorizaciones y pagos",
+
     "spec.kicker": "¿Por qué Goval?",
     "spec.title": "Especialistas en seguros de viaje. Nada más.",
     "spec.p":
@@ -179,6 +192,19 @@ const dict = {
       "Connect your travel insurance to all the infrastructure it needs.",
     "ops.p":
       "One connector. The whole ecosystem — assistance, medical network, claims, policies, and reporting, under your brand from day one.",
+
+    "diagram.connects": "Connects to",
+    "diagram.insurer": "Insurer",
+    "diagram.insurerSub": "Travel insurance product",
+    "diagram.hubSub": "Operational & technology connector",
+    "diagram.n1": "24/7 assistance",
+    "diagram.n2": "Global provider network",
+    "diagram.n3": "Claims management",
+    "diagram.n4": "Policy administration",
+    "diagram.n5": "Rules engine",
+    "diagram.n6": "APIs & integrations",
+    "diagram.n7": "Analytics & reporting",
+    "diagram.n8": "Authorizations & payments",
 
     "spec.kicker": "Why Goval?",
     "spec.title": "Travel insurance specialists. Nothing else.",
@@ -327,6 +353,9 @@ function applyLang(lang, pushUrl = true) {
   syncThemeLabel();
   if (typeof window.refreshFormValidationCopy === "function") {
     window.refreshFormValidationCopy();
+  }
+  if (typeof window.redrawOpsDiagram === "function") {
+    window.redrawOpsDiagram();
   }
 }
 

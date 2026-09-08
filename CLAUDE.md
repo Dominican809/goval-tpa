@@ -31,6 +31,7 @@ in both languages (`?lang=es` / `?lang=en`) and both themes (light / dark).
 | `form-validate.js` | Contact-form name/email/phone/message validation. IIFE. The `#contact` **form** + its CSS + `form.*` keys are kept verbatim from upstream — restore from `upstream/main` rather than editing. The contact-card copy above the form has since been updated with the real phone (`+507 836 6014`, `tel:` link) and email. |
 | `nav.js` | Mobile hamburger menu. IIFE. |
 | `impact.js` | `#momento` carousel: auto-rotates the 3 `.impact-slide`s every 5.5s, pauses on hover/focus, manual nav via `.impact-dot`s. All 3 slides live in the DOM (i18n translates them); JS only toggles `.is-active`. IIFE. |
+| `diagram.js` | `#operacion` live ecosystem diagram: draws SVG connector paths from hub → insurer + 8 nodes; redraws on resize / lang change (`window.redrawOpsDiagram`). Hidden links on mobile. IIFE. |
 | `public/` | Logo, favicons, OG share image (binary assets). |
 | `robots.txt`, `sitemap.xml` | SEO. Contain absolute URLs — see "Hardcoded URLs". |
 | `CLIENT-DELIVERY-*.{md,html}` | Client handoff notes and slide decks. **Not** part of the site; don't wire them into `index.html`. |

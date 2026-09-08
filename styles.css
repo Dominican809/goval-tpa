@@ -329,17 +329,454 @@ html[data-theme="dark"] .stat-n { color: #f2f6fa; }
 .band .wrap { max-width: 46rem; }
 .band > .wrap > p { color: var(--muted); font-size: 1.05rem; margin: 0 auto; max-width: 40rem; }
 
-.ops-figure { margin: 2.5rem auto 0; max-width: 900px; }
-.ops-figure img {
-  width: 100%;
-  height: auto;
-  border-radius: 14px;
-  border: 1px solid var(--border);
-  box-shadow: 0 12px 40px rgba(10, 35, 66, 0.1);
+/* #operacion needs room for the live ecosystem diagram */
+#operacion.band .wrap { max-width: 74rem; }
+
+/* ---------- Live ops diagram (HTML/CSS/SVG — not a raster) ---------- */
+.ops-diagram {
+  --diagram-surface: #ffffff;
+  --diagram-ink: var(--navy);
+  --diagram-muted: #3d5a78;
+  --diagram-line: #5ba3d0;
+  --diagram-glow: #4fc3f7;
+  --diagram-panel: linear-gradient(115deg, #f4f8fc 0%, #e8f1f8 42%, #0b3a5c 100%);
+  margin: 2.5rem auto 0;
+  text-align: left;
+  color: var(--diagram-ink);
 }
-html[data-theme="dark"] .ops-figure img {
-  border-color: var(--border-strong);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+html[data-theme="dark"] .ops-diagram {
+  --diagram-surface: #102536;
+  --diagram-ink: #e8eef5;
+  --diagram-muted: #9eb4c8;
+  --diagram-line: #6eb6dc;
+  --diagram-glow: #5ec8f0;
+  --diagram-panel: linear-gradient(115deg, #0d1c2a 0%, #123048 45%, #061828 100%);
+}
+
+.ops-diagram-stage {
+  --ops-edge: 14px; /* ~12–16px from panel border */
+  position: relative;
+  /* Absolute layout so the hub sits on the same center axis as the section title */
+  display: block;
+  min-height: 32rem;
+  padding: 2rem 0;
+  border-radius: 18px;
+  overflow: hidden;
+  background: var(--diagram-panel);
+  border: 1px solid color-mix(in srgb, var(--teal) 22%, transparent);
+  box-shadow: 0 18px 50px rgba(10, 35, 66, 0.12);
+}
+html[data-theme="dark"] .ops-diagram-stage {
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.35);
+  border-color: rgba(110, 182, 220, 0.2);
+}
+
+.ops-diagram-mesh {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.55;
+  background:
+    radial-gradient(circle at 82% 28%, rgba(79, 195, 247, 0.18), transparent 28%),
+    radial-gradient(circle at 88% 72%, rgba(255, 255, 255, 0.08), transparent 26%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Ccircle cx='8' cy='20' r='1.2' fill='%23ffffff' opacity='.35'/%3E%3Ccircle cx='40' cy='60' r='1' fill='%23ffffff' opacity='.28'/%3E%3Ccircle cx='90' cy='30' r='1.1' fill='%23ffffff' opacity='.3'/%3E%3Ccircle cx='70' cy='95' r='1' fill='%23ffffff' opacity='.25'/%3E%3Cpath d='M8 20L40 60L90 30M40 60L70 95' stroke='%23ffffff' stroke-opacity='.12' stroke-width='1' fill='none'/%3E%3C/svg%3E");
+  background-size: auto, auto, 160px 160px;
+  background-position: center, center, 70% 40%;
+  mix-blend-mode: soft-light;
+}
+html:not([data-theme="dark"]) .ops-diagram-mesh {
+  opacity: 0.35;
+  mix-blend-mode: multiply;
+  background:
+    radial-gradient(circle at 85% 30%, rgba(26, 111, 154, 0.08), transparent 30%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Ccircle cx='8' cy='20' r='1.2' fill='%230a2342' opacity='.18'/%3E%3Ccircle cx='40' cy='60' r='1' fill='%230a2342' opacity='.14'/%3E%3Ccircle cx='90' cy='30' r='1.1' fill='%230a2342' opacity='.16'/%3E%3Cpath d='M8 20L40 60L90 30' stroke='%230a2342' stroke-opacity='.08' stroke-width='1' fill='none'/%3E%3C/svg%3E");
+}
+
+/* Hub locked to stage center (= title center) */
+.ops-diagram-hub {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 3;
+}
+
+/* ~14px from left border (green guide) */
+.ops-diagram-source {
+  position: absolute;
+  left: var(--ops-edge);
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+}
+
+/* Label in the open span between source and hub */
+.ops-diagram-bridge {
+  position: absolute;
+  left: calc(var(--ops-edge) + 10.5rem);
+  right: calc(50% + clamp(5.5rem, 9vw, 7rem));
+  top: 50%;
+  transform: translateY(-135%);
+  z-index: 2;
+  margin: 0;
+  padding: 0 0.35rem;
+  box-sizing: border-box;
+  text-align: center;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #d7ecf8;
+  letter-spacing: 0.02em;
+  pointer-events: none;
+}
+html:not([data-theme="dark"]) .ops-diagram-bridge {
+  color: var(--teal);
+}
+.ops-diagram-bridge::after {
+  content: none;
+}
+
+/* ~14px from right border; block hugs the right edge so arrows reach far */
+.ops-diagram-nodes {
+  position: absolute;
+  right: var(--ops-edge);
+  left: auto;
+  width: max-content;
+  max-width: calc(50% - clamp(6.5rem, 10vw, 8.5rem));
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 0.45rem;
+  min-height: 26rem;
+  max-height: 28rem;
+}
+.ops-diagram-links {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+  overflow: visible;
+  color: var(--diagram-line);
+}
+.ops-link {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  opacity: 0.85;
+}
+.ops-link-main {
+  stroke-width: 3.2;
+  opacity: 1;
+  filter: drop-shadow(0 0 6px rgba(79, 195, 247, 0.45));
+}
+
+.ops-source-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  width: min(100%, 10.5rem);
+  padding: 1.1rem 0.85rem 1.15rem;
+  border-radius: 14px;
+  background: var(--diagram-surface);
+  border: 1px solid color-mix(in srgb, var(--navy) 12%, transparent);
+  box-shadow: 0 10px 28px rgba(10, 35, 66, 0.12);
+  text-align: center;
+}
+.ops-source-icon {
+  width: 2.75rem;
+  height: 2.75rem;
+  color: var(--navy);
+  margin-bottom: 0.15rem;
+}
+html[data-theme="dark"] .ops-source-icon { color: #9fd0ea; }
+.ops-source-icon svg { width: 100%; height: 100%; display: block; }
+.ops-source-card strong {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--diagram-ink);
+}
+.ops-source-card > span:last-child {
+  font-size: 0.72rem;
+  line-height: 1.35;
+  color: var(--diagram-muted);
+}
+
+.ops-hub-ring {
+  position: absolute;
+  inset: -14%;
+  border-radius: 50%;
+  border: 1.5px dashed color-mix(in srgb, var(--diagram-glow) 55%, transparent);
+  animation: ops-orbit 28s linear infinite;
+  pointer-events: none;
+}
+.ops-hub-core {
+  position: relative;
+  width: clamp(9.5rem, 18vw, 12.25rem);
+  height: clamp(9.5rem, 18vw, 12.25rem);
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.2rem;
+  padding: 1rem;
+  text-align: center;
+  color: #fff;
+  background:
+    radial-gradient(circle at 35% 28%, #2a6fa0 0%, transparent 42%),
+    radial-gradient(circle at 50% 55%, #0a3a5c 0%, #061a2e 72%);
+  box-shadow:
+    0 0 0 3px rgba(79, 195, 247, 0.35),
+    0 0 28px rgba(79, 195, 247, 0.55),
+    0 0 48px rgba(26, 111, 154, 0.35),
+    inset 0 0 24px rgba(0, 0, 0, 0.25);
+  animation: ops-pulse 3.6s ease-in-out infinite;
+}
+.ops-hub-mark {
+  width: 2.35rem;
+  height: 2.35rem;
+  margin-bottom: 0.2rem;
+  display: grid;
+  place-items: center;
+}
+.ops-hub-mark img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+.ops-hub-core strong {
+  font-size: 0.92rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+.ops-hub-core span {
+  font-size: 0.62rem;
+  line-height: 1.3;
+  color: #c5e4f5;
+  max-width: 8.5rem;
+}
+
+.ops-node {
+  display: grid;
+  grid-template-columns: 2.85rem 1fr;
+  align-items: center;
+  gap: 0.55rem;
+}
+.ops-node-disc {
+  width: 2.85rem;
+  height: 2.85rem;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--diagram-surface);
+  color: var(--navy);
+  border: 1px solid color-mix(in srgb, var(--navy) 10%, transparent);
+  box-shadow: 0 6px 16px rgba(10, 35, 66, 0.1);
+}
+html[data-theme="dark"] .ops-node-disc { color: #9fd0ea; }
+.ops-node-disc svg { width: 1.25rem; height: 1.25rem; display: block; }
+.ops-node-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  line-height: 1.25;
+  color: #f2f8fc;
+  text-shadow: 0 1px 2px rgba(6, 22, 40, 0.35);
+}
+html:not([data-theme="dark"]) .ops-node-label {
+  color: var(--navy);
+  text-shadow: none;
+}
+.ops-node-num { opacity: 0.75; font-weight: 700; }
+
+@keyframes ops-pulse {
+  0%, 100% { box-shadow: 0 0 0 3px rgba(79, 195, 247, 0.35), 0 0 24px rgba(79, 195, 247, 0.45), 0 0 40px rgba(26, 111, 154, 0.3), inset 0 0 24px rgba(0, 0, 0, 0.25); }
+  50% { box-shadow: 0 0 0 5px rgba(79, 195, 247, 0.5), 0 0 36px rgba(79, 195, 247, 0.65), 0 0 56px rgba(26, 111, 154, 0.4), inset 0 0 24px rgba(0, 0, 0, 0.25); }
+}
+@keyframes ops-orbit {
+  to { transform: rotate(360deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ops-hub-core, .ops-hub-ring { animation: none; }
+}
+
+@media (max-width: 860px) {
+  .ops-diagram-stage {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    min-height: 0;
+    padding: 1.75rem 1.15rem 2rem;
+  }
+  .ops-diagram-hub,
+  .ops-diagram-source,
+  .ops-diagram-bridge,
+  .ops-diagram-nodes {
+    position: relative;
+    left: auto;
+    right: auto;
+    top: auto;
+    transform: none;
+  }
+  .ops-diagram-source {
+    z-index: 2;
+    margin-bottom: 0.85rem;
+  }
+  /* Vertical connector arrow (text hidden; desktop SVG unchanged) */
+  .ops-diagram-bridge {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    width: auto;
+    max-width: none;
+    margin: 0;
+    padding: 0;
+    font-size: 0;
+    line-height: 0;
+    color: transparent;
+    background: none;
+    box-shadow: none;
+    pointer-events: none;
+  }
+  .ops-diagram-bridge::before {
+    content: "";
+    display: block;
+    width: 3px;
+    height: 2.35rem;
+    border-radius: 99px;
+    background: linear-gradient(180deg, #1a6f9a, #4fc3f7);
+    box-shadow: 0 0 10px rgba(79, 195, 247, 0.45);
+  }
+  .ops-diagram-bridge::after {
+    content: "";
+    display: block;
+    width: 0;
+    height: 0;
+    margin-top: 1px;
+    border-left: 7px solid transparent;
+    border-right: 7px solid transparent;
+    border-top: 10px solid #4fc3f7;
+    /* no filter/drop-shadow — it paints a rectangular “shade” behind the tip */
+    background: none;
+    box-shadow: none;
+  }
+  /* Clear dashed ring under hub; arrow to list sits in the gap below */
+  .ops-diagram-hub {
+    margin: 1.15rem 0 1rem;
+  }
+  .ops-hub-ring {
+    inset: -10px;
+  }
+  /* Encapsulated list card + arrow from hub (mobile only) */
+  .ops-diagram-nodes {
+    position: relative;
+    width: min(100%, 22rem);
+    max-width: 100%;
+    min-height: 0;
+    max-height: none;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.15rem 1rem;
+    justify-items: start;
+    box-sizing: border-box;
+    margin: 3.65rem auto 0;
+    padding: 1.25rem 1.15rem 1.35rem;
+    border-radius: 16px;
+    background: var(--diagram-surface);
+    border: 1px solid color-mix(in srgb, var(--navy) 12%, transparent);
+    box-shadow: 0 10px 28px rgba(10, 35, 66, 0.12);
+  }
+  html[data-theme="dark"] .ops-diagram-nodes {
+    border-color: color-mix(in srgb, #9fd0ea 18%, transparent);
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.28);
+  }
+  /* Shaft — no filter (avoids rectangular shade) */
+  .ops-diagram-nodes::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: -3.35rem;
+    transform: translateX(-50%);
+    width: 3px;
+    height: 2.15rem;
+    border-radius: 99px;
+    background: linear-gradient(180deg, #1a6f9a, #4fc3f7);
+    box-shadow: 0 0 10px rgba(79, 195, 247, 0.45);
+    pointer-events: none;
+  }
+  /* Tip — leave ~10–12px air above the card */
+  .ops-diagram-nodes::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: -1.25rem;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 7px solid transparent;
+    border-right: 7px solid transparent;
+    border-top: 10px solid #4fc3f7;
+    background: none;
+    box-shadow: none;
+    filter: none;
+    pointer-events: none;
+  }
+  .ops-node {
+    gap: 0.7rem;
+  }
+  .ops-node-label {
+    color: var(--diagram-ink);
+    text-shadow: none;
+    font-size: 0.78rem;
+    line-height: 1.35;
+  }
+  .ops-diagram-links { display: none; }
+  .ops-hub-core {
+    width: 10rem;
+    height: 10rem;
+    margin: 0 auto;
+  }
+  .ops-source-card { margin: 0 auto; }
+}
+
+@media (max-width: 480px) {
+  .ops-diagram-stage {
+    padding: 1.85rem 1rem 2.15rem;
+  }
+  .ops-diagram-source {
+    margin-bottom: 1rem;
+  }
+  .ops-diagram-bridge::before {
+    height: 2.75rem;
+  }
+  .ops-diagram-hub {
+    margin: 1.35rem 0 1.15rem;
+  }
+  .ops-diagram-nodes {
+    grid-template-columns: 1fr;
+    width: 100%;
+    gap: 1.25rem;
+    margin-top: 4rem;
+    padding: 1.35rem 1.2rem 1.45rem;
+  }
+  .ops-diagram-nodes::before {
+    top: -3.65rem;
+    height: 2.35rem;
+  }
+  .ops-diagram-nodes::after {
+    top: -1.35rem;
+  }
 }
 
 /* ---------- 3. Specialization statement ---------- */

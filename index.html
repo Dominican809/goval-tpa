@@ -29,10 +29,19 @@
   <link rel="icon" href="public/favicon.png" type="image/png" />
   <link rel="icon" href="public/favicon-32.png" type="image/png" sizes="32x32" />
   <link rel="apple-touch-icon" href="public/apple-touch-icon.png" />
+  <!-- Non-blocking fonts: a hanging fonts.googleapis.com request was stalling the tab spinner on some WSL/browser setups. -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=24" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+    media="print"
+    onload="this.media='all'"
+  />
+  <noscript>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  </noscript>
+  <link rel="stylesheet" href="styles.css?v=41" />
   <script>
     (function () {
       try {
@@ -168,21 +177,99 @@
       <div class="wrap">
         <h2 data-i18n="ops.title">Conecta tu seguro de viaje a toda la infraestructura que necesita.</h2>
         <p data-i18n="ops.p">Un solo conector. Todo el ecosistema — asistencia, red médica, reclamos, pólizas y reportes, bajo tu marca desde el primer día.</p>
-        <!-- TODO(goval): la infografía está solo en español; si se prioriza EN, generar versión traducida y alternar con data-i18n. -->
-        <figure class="ops-figure">
-          <picture>
-            <source srcset="public/hero-diagram.webp" type="image/webp" />
-            <img
-              src="public/hero-diagram.jpg"
-              width="1600"
-              height="900"
-              loading="lazy"
-              decoding="async"
-              alt="Goval TPA como conector operativo y tecnológico entre la aseguradora y toda la operación del seguro de viaje: asistencia 24/7, red global de prestadores, gestión de siniestros, administración de pólizas, motor de reglas, APIs e integraciones, analítica y reportes, autorizaciones y pagos."
-              data-i18n-alt="hero.figureAlt"
-            />
-          </picture>
-        </figure>
+
+        <div
+          class="ops-diagram"
+          role="img"
+          aria-label="Goval TPA como conector operativo y tecnológico entre la aseguradora y toda la operación del seguro de viaje."
+          data-i18n-aria="hero.figureAlt"
+        >
+          <div class="ops-diagram-stage">
+            <div class="ops-diagram-mesh" aria-hidden="true"></div>
+
+            <div class="ops-diagram-source" data-diagram-anchor="source">
+              <div class="ops-source-card">
+                <span class="ops-source-icon" aria-hidden="true">
+                  <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M8 40V18l16-10 16 10v22H8Z" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/>
+                    <path d="M18 40V28h12v12" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/>
+                    <path d="M20 22h8M24 18v8" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+                    <circle cx="36" cy="34" r="7" fill="var(--diagram-surface)" stroke="currentColor" stroke-width="2"/>
+                    <path d="M33.2 34.2l2 2 4-4.2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </span>
+                <strong data-i18n="diagram.insurer">Aseguradora</strong>
+                <span data-i18n="diagram.insurerSub">Producto de seguro de viaje</span>
+              </div>
+            </div>
+
+            <p class="ops-diagram-bridge" data-i18n="diagram.connects">Conecta con</p>
+
+            <div class="ops-diagram-hub" data-diagram-anchor="hub">
+              <div class="ops-hub-ring" aria-hidden="true"></div>
+              <div class="ops-hub-core">
+                <span class="ops-hub-mark" aria-hidden="true">
+                  <img src="public/goval-mark.png" width="40" height="40" alt="" />
+                </span>
+                <strong>Goval TPA</strong>
+                <span data-i18n="diagram.hubSub">Conector operativo y tecnológico</span>
+              </div>
+            </div>
+
+            <ul class="ops-diagram-nodes">
+              <li class="ops-node" data-diagram-anchor="n1">
+                <span class="ops-node-disc" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none"><path d="M4 14v2a4 4 0 0 0 4 4h1v-3H8a1 1 0 0 1-1-1v-2H4Zm16 0v2a1 1 0 0 1-1 1h-1v3h1a4 4 0 0 0 4-4v-2h-3ZM8 10a4 4 0 1 1 8 0v4H8v-4Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
+                </span>
+                <span class="ops-node-label"><span class="ops-node-num">1.</span> <span data-i18n="diagram.n1">Asistencia 24/7</span></span>
+              </li>
+              <li class="ops-node" data-diagram-anchor="n2">
+                <span class="ops-node-disc" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="1.7"/><path d="M4 12h16M12 4c2.5 2.8 2.5 13.2 0 16M12 4c-2.5 2.8-2.5 13.2 0 16" stroke="currentColor" stroke-width="1.5"/></svg>
+                </span>
+                <span class="ops-node-label"><span class="ops-node-num">2.</span> <span data-i18n="diagram.n2">Red global de prestadores</span></span>
+              </li>
+              <li class="ops-node" data-diagram-anchor="n3">
+                <span class="ops-node-disc" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none"><path d="M7 3h7l4 4v14H7V3Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M14 3v4h4M10 13h5M10 17h3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="16.5" cy="15.5" r="3.2" stroke="currentColor" stroke-width="1.5"/><path d="M15.4 15.5h2.2M16.5 14.4v2.2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+                </span>
+                <span class="ops-node-label"><span class="ops-node-num">3.</span> <span data-i18n="diagram.n3">Gestión de siniestros</span></span>
+              </li>
+              <li class="ops-node" data-diagram-anchor="n4">
+                <span class="ops-node-disc" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none"><path d="M7 3h7l4 4v14H7V3Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M14 3v4h4M9 14l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </span>
+                <span class="ops-node-label"><span class="ops-node-num">4.</span> <span data-i18n="diagram.n4">Administración de pólizas</span></span>
+              </li>
+              <li class="ops-node" data-diagram-anchor="n5">
+                <span class="ops-node-disc" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none"><path d="M12 8.2a3.8 3.8 0 1 0 0 7.6 3.8 3.8 0 0 0 0-7.6Z" stroke="currentColor" stroke-width="1.7"/><path d="M12 3.5v2.2M12 18.3v2.2M4.8 6.8l1.6 1.6M17.6 15.6l1.6 1.6M3.5 12h2.2M18.3 12h2.2M4.8 17.2l1.6-1.6M17.6 8.4l1.6-1.6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                </span>
+                <span class="ops-node-label"><span class="ops-node-num">5.</span> <span data-i18n="diagram.n5">Motor de reglas</span></span>
+              </li>
+              <li class="ops-node" data-diagram-anchor="n6">
+                <span class="ops-node-disc" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none"><path d="M7 16a4 4 0 0 1 .4-7.9A5.5 5.5 0 0 1 17.8 9 3.5 3.5 0 0 1 18 16H7Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><circle cx="9" cy="19.5" r="1.2" fill="currentColor"/><circle cx="15" cy="19.5" r="1.2" fill="currentColor"/><path d="M9 19.5h6" stroke="currentColor" stroke-width="1.4"/></svg>
+                </span>
+                <span class="ops-node-label"><span class="ops-node-num">6.</span> <span data-i18n="diagram.n6">APIs e integraciones</span></span>
+              </li>
+              <li class="ops-node" data-diagram-anchor="n7">
+                <span class="ops-node-disc" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="13" rx="2" stroke="currentColor" stroke-width="1.7"/><path d="M8 21h8M12 17v4M7 14V11M11 14V9M15 14v-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                </span>
+                <span class="ops-node-label"><span class="ops-node-num">7.</span> <span data-i18n="diagram.n7">Analítica y reportes</span></span>
+              </li>
+              <li class="ops-node" data-diagram-anchor="n8">
+                <span class="ops-node-disc" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="6" width="18" height="12" rx="2" stroke="currentColor" stroke-width="1.7"/><path d="M3 10h18M7 14h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                </span>
+                <span class="ops-node-label"><span class="ops-node-num">8.</span> <span data-i18n="diagram.n8">Autorizaciones y pagos</span></span>
+              </li>
+            </ul>
+
+            <svg class="ops-diagram-links" aria-hidden="true"></svg>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -420,5 +507,6 @@
   <script src="form-validate.js"></script>
   <script src="nav.js"></script>
   <script src="impact.js"></script>
+  <script src="diagram.js?v=2"></script>
 </body>
 </html>
